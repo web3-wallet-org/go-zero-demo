@@ -1,0 +1,46 @@
+syntax = "v1"
+
+info (
+	title:   "wallet api"
+	desc:    "go-zero wallet demo"
+	author:  "web3-wallet-org"
+	version: "v1"
+)
+
+type (
+	CreateWalletReq {
+		Address string `json:"address"`
+		Balance int64  `json:"balance"`
+	}
+	GetWalletReq {
+		Address string `path:"address"`
+	}
+	WalletResp {
+		Address string `json:"address"`
+		Balance int64  `json:"balance"`
+	}
+	TransferReq {
+		From   string `json:"from"`
+		To     string `json:"to"`
+		Amount int64  `json:"amount"`
+	}
+	TransferResp {
+		From WalletResp `json:"from"`
+		To   WalletResp `json:"to"`
+	}
+)
+
+@server (
+	group: wallet
+)
+service wallet-api {
+	@handler CreateWalletHandler
+	post /wallets (CreateWalletReq) returns (WalletResp)
+
+	@handler GetWalletHandler
+	get /wallets/:address (GetWalletReq) returns (WalletResp)
+
+	@handler TransferHandler
+	post /wallets/transfer (TransferReq) returns (TransferResp)
+}
+
